@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome to my TODO app</title>
+    </head>
+    <body>
+        <h2>My TODO list</h2>
+        <br>
+        {% if todos != None %}
+            <table border=1>
+                <th>TODO</th>
+                <th>Completed?</th>
+                {% for todo in todos: %}
+                    <tr>
+                        <td>{{ todo['name'] }}</td>
+                        <td>{{ todo['completed'] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+                    <h2><i>No TODOs currently</i></h2>
+        {% endif %}
+    </body>
+</html>

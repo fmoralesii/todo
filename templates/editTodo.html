@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Edit a TODO</title>
+    </head>
+    <body>
+        <h2>Edit a TODO</h2>
+        <br>
+        {% if todo_id != None %}
+            ID we'd edit: {{ todo_id }}
+        {% else %}
+            No ID to edit currently.
+        {% endif %}
+    </body>
+</html>
