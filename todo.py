@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, jsonify
 app = Flask(__name__)
 
 from create_db import Todo
@@ -14,7 +14,7 @@ engine = create_engine('sqlite:///todos.db?check_same_thread=False')
 Session = sessionmaker(bind = engine)
 session = Session()
 
-# NOTE: Functions by default to allow GET, explicit naming only
+# NOTE: Functions by default allow GET, explicit naming only
 # required when we want to implement more verbs than that.
 
 # Show only TODOs not completed
@@ -78,6 +78,7 @@ def deleteTodo(todo_id):
 @app.route('/todo/<int:todo_id>/complete')
 def completeTodo(todo_id):
     todo = session.query(Todo).filter_by(id = todo_id).one()
+
     todo.isCompleted = True
     session.add(todo)
     session.commit()
@@ -87,13 +88,39 @@ def completeTodo(todo_id):
 @app.route('/todo/completed')
 def showCompleted():
     todos = session.query(Todo).filter_by(isCompleted = 1).all()
+
     if not todos:
         return render_template('completed.html', completed_todos = None)
     else:
         return render_template('completed.html', completed_todos = todos)
 
+# API endpoints for JSON
+@app.route('/todo/completed/JSON')
+def showCompletedJSON():
+    todos = session.query(Todo).filter_by(isCompleted = 1).all()
+
+    return jsonify(TODOs = [todo.serialize for todo in todos])
+
+@app.route('/todo/pending/JSON')
+def showPendingJSON():
+    todos = session.query(Todo).filter_by(isCompleted = 0).all()
+
+    return jsonify(TODOs = [todo.serialize for todo in todos])
+
+@app.route('/todo/<int:todo_id>/JSON')
+def showTodoJSON(todo_id):
+    try:
+        # If we get a bad ID, we'll get an exception. In that case
+        # catch it, and render empty JSON to the user
+        todo = session.query(Todo).filter_by(id = todo_id).one()
+    except:
+        return jsonify(TODOs = [])
+   
+    return jsonify(TODOs = todo.serialize)
+
 # "Run" our app using Flask's built in dev web server, listening
 # on localhost port 5000
+# NOTE: This is NOT for production use, see Flask docs for that
 if __name__ == "__main__":
     app.debug = True
     app.run(host = '0.0.0.0', port = 5000)

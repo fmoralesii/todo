@@ -30,6 +30,15 @@ class Todo(Base):
     name = Column(String(100), nullable = False)
     isCompleted = Column(Boolean, nullable = False)
 
+    # Return our data in an easily serializable format
+    @property
+    def serialize(self):
+        return {
+            'name' : self.name,
+            'id' : self.id,
+            'isCompleted' : self.isCompleted
+        }
+
 # In SQLAlchemy the 'Engine' class, '... represents
 # the core interface to the database,...' Since we're
 # using SQLite3, we specify the DB when creating
