@@ -1,3 +1,4 @@
+<!-- Input: todo object -->
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,6 +7,12 @@
     <body>
         <h2>Delete a TODO</h2>
         <br>
-        Deleting TODO with ID: {{ todo_id }}
+        Are you sure you want to delete the following TODO?<br>
+        Name: {{ todo.name }}<br>
+        ID: {{ todo.id }} <br><br>
+        <form method="POST" action="{{ url_for('deleteTodo', todo_id = todo.id) }}">
+            <input type="submit" value="Delete">
+            <a href="{{ url_for('showTodos') }}">Cancel</a>
+        </form>
     </body>
 </html>

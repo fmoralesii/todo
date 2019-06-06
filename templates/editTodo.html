@@ -1,3 +1,4 @@
+<!-- Input: todo object -->
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,8 +7,17 @@
     <body>
         <h2>Edit a TODO</h2>
         <br>
-        {% if todo_id != None %}
-            ID we'd edit: {{ todo_id }}
+        {% if todo != None %}
+            <p>Editing TODO:
+                <br>
+                <br>
+                Name: {{ todo.name }}<br>
+                ID:   {{ todo.id }}</p>
+            <form method="POST" action="{{ url_for('editTodo', todo_id = todo.id) }}">
+                <input type="text" size="30" value="{{ todo.name }}" name="todo">
+                <input type="submit" value="Save">
+                <a href="{{ url_for('showTodos') }} ">Cancel</a>
+            </form>
         {% else %}
             No ID to edit currently.
         {% endif %}

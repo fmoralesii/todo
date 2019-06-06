@@ -1,3 +1,4 @@
+<!-- Input: A list of todo objects -->
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,16 +10,31 @@
         {% if todos != None %}
             <table border=1>
                 <th>TODO</th>
-                <th>Completed?</th>
+                <th>ID</th>
+                <th>Edit</th>
+                <th>Complete</th>
+                <th>Delete</th>
+                <th>Completed</th>
                 {% for todo in todos: %}
                     <tr>
-                        <td>{{ todo['name'] }}</td>
-                        <td>{{ todo['completed'] }}</td>
+                        <td>{{ todo.name }}</td>
+                        <td>{{ todo.id }}</td>
+                        <td><a href="{{ url_for('editTodo', todo_id = todo.id) }}">Edit</a></td>
+                        <td><a href="{{ url_for('completeTodo', todo_id = todo.id) }}">Complete</td>
+                        <td><a href="{{ url_for('deleteTodo', todo_id = todo.id) }}">Delete</a></td>
+                        <td>{{ todo.isCompleted }}</td>
                     </tr>
                 {% endfor %}
             </table>
+            <br>
+            <br>
+            <a href="{{ url_for('addTodo') }}">Add</a> a TODO
+            <br>
+            Show <a href="{{ url_for('showCompleted') }}">Completed</a> TODOs
         {% else %}
-                    <h2><i>No TODOs currently</i></h2>
+                    <h2><i>No TODOs currently pending</i></h2>
+                    Would you like to <a href="{{ url_for('addTodo') }}">Add</a> one?<br>
+                    Show <a href="{{ url_for('showCompleted') }}">Completed</a> TODOs
         {% endif %}
     </body>
 </html>
