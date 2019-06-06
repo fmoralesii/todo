@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, jsonify
+from flask import Flask, render_template, redirect, request, jsonify, flash
 app = Flask(__name__)
 
 from create_db import Todo
@@ -34,16 +34,15 @@ def addTodo():
     if request.method == 'GET':
         return render_template('addTodo.html')
     else:
-        if request.form['todo']:
-            todo = Todo()
-            todo.name = request.form['todo']
-            todo.isCompleted = False
-            session.add(todo)
-            session.commit()
-            return redirect('/todos')
-        else:
-            # We should use Flask flash to show an error here
-            return redirect('/todos')
+        todo = Todo()
+        todo.name = request.form['todo']
+        todo.isCompleted = False
+
+        session.add(todo)
+        session.commit()
+        flash(todo.name + ' added to TODO list')
+        return redirect('/todos')
+
 
 # Edit a TODO
 @app.route('/todo/<int:todo_id>/edit', methods = ['GET', 'POST'])
@@ -53,13 +52,13 @@ def editTodo(todo_id):
     if request.method == 'GET':
         return render_template('editTodo.html', todo = todo)
     else:
-        if request.form['todo']:
-            todo.name = request.form['todo']
-            session.add(todo)
-            session.commit()
-            return redirect('/todos')
-        else:
-            return redirect('/todos')
+        todo.name = request.form['todo']
+
+        session.add(todo)
+        session.commit()
+        flash('Successfully editied ' + todo.name + ' TODO')
+        return redirect('/todos')
+
 
 
 # Delete a TODO
@@ -72,6 +71,7 @@ def deleteTodo(todo_id):
     else:
         session.delete(todo)
         session.commit()
+        flash('Successfully deleted ' + todo.name + ' TODO')
         return redirect('/todos')
 
 # Mark TODO as complete, then redirect to 'showTodos'
@@ -82,6 +82,7 @@ def completeTodo(todo_id):
     todo.isCompleted = True
     session.add(todo)
     session.commit()
+    flash(todo.name + ' marked as complete')
     return redirect('/todos')
 
 # Show all completed TODOs
@@ -122,5 +123,6 @@ def showTodoJSON(todo_id):
 # on localhost port 5000
 # NOTE: This is NOT for production use, see Flask docs for that
 if __name__ == "__main__":
+    app.secret_key = 'use_a_better_key'
     app.debug = True
     app.run(host = '0.0.0.0', port = 5000)

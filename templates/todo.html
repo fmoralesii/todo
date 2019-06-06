@@ -6,7 +6,16 @@
     </head>
     <body>
         <h2>My TODO list</h2>
-        <br>
+        <!-- If we have flash messages, display them -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li><string>{{ message }}</string></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
         {% if todos != None %}
             <table border=1>
                 <th>TODO</th>
